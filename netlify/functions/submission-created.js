@@ -22,7 +22,7 @@ export const handler = async (event) => {
         <p>You’re on the VIP list. Here’s your coupon for your next visit:</p>
         <p style="font-size:18px;font-weight:700;margin:16px 0">CODE: ${COUPON_CODE}</p>
         <p>${COUPON_DETAILS}</p>
-        <p>Book online: <a href="https://beautyquest.glossgenius.com/">GlossGenius</a></p>
+        <p>Book online: <a href="https://brendasanderscurlup.glossgenius.com/">GlossGenius</a></p>
         <p style="color:#6b7280;font-size:12px;margin-top:24px">
           You received this because you opted in on the website. Reply STOP to end SMS; use the unsubscribe link for emails.
         </p>
