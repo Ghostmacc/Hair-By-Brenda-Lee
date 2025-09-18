@@ -67,7 +67,43 @@
 @media (max-width: 640px){
   .nav-cta{ padding:.55rem .85rem; }
   .nav-cta__sub{ display:none; }
-}</style>
+}
+
+/* Hero Promo Card Styles */
+.hero__promo{
+  position: absolute;
+  right: 3rem;
+  top: 6rem;
+  width: clamp(260px, 30vw, 360px);
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
+  border: 1px solid rgba(0,0,0,.06);
+}
+.hero__promo-title{ margin: 0 0 .25rem; font-weight: 700; font-size: 1.125rem; }
+.hero__promo-sub{ margin: 0 0 .75rem; line-height: 1.35; }
+.hero__promo-note{ margin: .5rem 0 0; font-size: .8rem; opacity: .7; }
+
+/* Purple button styles for promo */
+.btn{ display: inline-block; padding: 0.75rem 1.5rem; border-radius: 999px; font-weight: 700; text-decoration: none; transition: transform .15s ease, box-shadow .15s ease; }
+.btn--purple{ background: linear-gradient(135deg, var(--purple-1) 0%, var(--purple-2) 100%); color: #fff; }
+.btn--purple:hover{ transform: translateY(-1px); box-shadow: 0 8px 24px rgba(124,58,237,.25); }
+.btn--lg{ padding: 1rem 2rem; font-size: 1rem; }
+
+/* Stack nicely on mobile */
+@media (max-width: 900px){
+  .hero__promo{
+    position: static;
+    width: 100%;
+    margin-top: 1rem;
+  }
+}
+
+/* Smooth anchor scroll and header offset */
+html { scroll-behavior: smooth; }
+#join { scroll-margin-top: 100px; }
+</style>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "HairSalon", "name": "Brenda \u2022 Bridal & Color", "url": "https://brendasanderscurlup.glossgenius.com/", "image": "https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=1600&auto=format&fit=crop", "telephone": "+17147036655", "address": {"@type": "PostalAddress", "addressLocality": "Hot Springs", "addressRegion": "AR", "addressCountry": "US"}, "sameAs": ["https://brendasanderscurlup.glossgenius.com/", "https://www.instagram.com/hair_by_brenda_lee?igsh=MWxsMjE1aHV5ODNjaA%3D%3D&utm_source=qr", "https://www.facebook.com/share/1CxTLXvyMn/?mibextid=wwXIfr"], "description": "Bridal hair and color specialist with 23 years of experience. Former Las Vegas bridal boutique owner who styled thousands of brides. Now in Hot Springs, AR."}</script>
 <link href="https://fonts.googleapis.com/css2?family=Allura&display=swap" rel="stylesheet">
 
@@ -166,6 +202,20 @@
           <div class="inline-flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-emerald-500"></span> By appointment only</div>
         </div>
       </div>
+
+      <!-- HERO PROMO: Join & Claim 20% Off (goes in the empty space) -->
+      <aside class="hero__promo" aria-label="Join list and claim 20% off">
+        <h3 class="hero__promo-title">New here?</h3>
+        <p class="hero__promo-sub">
+          Join our email list and show the welcome email for
+          <strong>20% off</strong> your first service.
+        </p>
+
+        <!-- This button scrolls to your Netlify form -->
+        <a href="#join" class="btn btn--purple btn--lg">Join &amp; Claim 20% Off</a>
+
+        <p class="hero__promo-note">New clients • One time use • Some services excluded</p>
+      </aside>
     </div>
   </section>
 
