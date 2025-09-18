@@ -340,11 +340,15 @@ html { scroll-behavior: smooth; }
           <div>
             <label class="text-sm" for="phone">Mobile (for SMS updates)</label>
             <input type="tel" id="phone" name="phone" inputmode="tel" autocomplete="tel"
-                   placeholder="(714) 271-2751" pattern="^\+1\d{10}$"
+                   placeholder="(714) 271-2751"
                    class="mt-1 w-full rounded-xl border border-gray-300 px-3 py-2">
-            <small class="text-xs text-gray-500">We'll auto-format to +1XXXXXXXXXX for SMS notices.</small>
+            <small class="text-xs text-gray-500">We'll normalize to +1XXXXXXXXXX in the automation.</small>
           </div>
 
+          <!-- Hidden defaults ensure checkbox keys always exist in Zapier -->
+          <input type="hidden" name="consent_email" value="false">
+          <input type="hidden" name="consent_sms" value="false">
+          
           <div class="grid md:grid-cols-2 gap-3">
             <label class="inline-flex items-start gap-2 text-sm">
               <input type="checkbox" id="consent_email" name="consent_email" value="true" required>
