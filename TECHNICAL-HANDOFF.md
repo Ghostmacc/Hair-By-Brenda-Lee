@@ -613,3 +613,196 @@ graph LR
 ---
 
 *This document serves as the complete technical reference for the Beauty Quest full-stack implementation. Keep this documentation updated as the system evolves.*
+
+---
+
+## 12. Field Mapping Matrix (Form → Zapier → Brevo)
+
+### Source of Truth (Form Fields on Site)
+
+**Form Name:** `brenda_leads` (Netlify)
+
+#### HTML Form Fields
+```html
+<!-- Fields present in the HTML form -->
+name (text)                    <!-- Required -->
+email (email)                  <!-- Required -->  
+phone (tel; optional)          <!-- Pattern guides +1 format -->
+consent_email (checkbox)       <!-- Required -->
+consent_sms (checkbox)         <!-- Optional -->
+goals (textarea)               <!-- Optional -->
+bot-field (honeypot)          <!-- Ignored - spam protection -->
+```
+
+**Client-side JavaScript:** Normalizes phone to E.164 format and forces booleans to literal "true"/"false" on submit.
+
+---
+
+### Zapier: Canonical Outputs by Step
+
+#### Step 1: Trigger - Netlify → New Form Submission
+| Output Field | Description | Notes |
+|--------------|-------------|-------|
+| `Email` | Raw email from form | Reselect Site/Form after DNS changes |
+| `Phone` | Raw phone from form | May be empty |
+| `Name` | Raw name field | Useful for first name extraction |
+| `consent_email` | "true" / "false" | JS sets default "false" when unchecked |
+| `consent_sms` | "true" / "false" | Same behavior as consent_email |
+| `goals` | Raw textarea content | Optional field |
+
+#### Step 2: Formatter → Utilities (Email Cleanup)
+| Output Field | Description | Usage |
+|--------------|-------------|-------|
+| `Email_Clean` | Lowercase + trimmed email | **Use for all downstream email mappings** |
+
+#### Step 3: Formatter → Numbers (Phone Normalization)  
+| Output Field | Description | Notes |
+|--------------|-------------|-------|
+| `Phone_E164` | Phone normalized to +1XXXXXXXXXX | Redundant with page JS but ensures consistency |
+
+#### Step 4: Formatter → Utilities (Boolean Cleanup)
+| Output Field | Description | Purpose |
+|--------------|-------------|---------|
+| `ConsentEmail` | Coerced "true"/"false" strings | Defensive layer if browser skipped hidden default |
+| `ConsentSMS` | Coerced "true"/"false" strings | Same as above |
+
+#### Step 5: (Optional) Utilities - Name Splitting
+| Output Field | Description | Usage |
+|--------------|-------------|-------|
+| `FirstName` | Split Name on first space | Only if you want FIRSTNAME attribute in Brevo |
+
+---
+
+### Brevo: Attributes & List Mappings
+
+**Note:** If an attribute doesn't exist in Brevo, create it in **Contacts → Settings → Attributes**.  
+**Recommended Types:** Text for names/notes, Boolean or Text for consents.
+
+#### Brevo Field Mappings
+| Brevo Field/Attribute | Map From (Zapier) | Required | Example |
+|-----------------------|-------------------|----------|---------|
+| **Email** (system) | `Email_Clean` | ✅ Required | someone@example.com |
+| **SMS/Mobile** (system) | `Phone_E164` | ⭕ Optional | +17142712751 |
+| **FIRSTNAME** (custom/default) | `FirstName` (or full `Name`) | ⭕ Optional | Maya |
+| **CONSENT_EMAIL** (custom) | `ConsentEmail` | ⭕ Optional | "true" / "false" |
+| **CONSENT_SMS** (custom) | `ConsentSMS` | ⭕ Optional | "true" / "false" |
+| **GOALS** (custom) | `goals` (raw from trigger) | ⭕ Optional | "Bridal trial 10/12" |
+| **List Assignment** | "Brenda VIP" (select list) | ✅ Required | Add/Update Contact → List |
+
+**Upsert Setting:** ON (update if contact already exists)
+
+---
+
+### Step 6: Brevo - Send Transactional Email
+
+#### Email Configuration Mapping
+| Field | Map/Value | Source |
+|-------|-----------|---------|
+| **To** | `Email_Clean` | Formatted email from Step 2 |
+| **Sender Name** | Brenda | Static value |
+| **Sender Email** | book@bqhotsprings.com | Static value |
+| **Reply-To Name** | hairbybrendalee@gmail.com | Static value |
+| **Reply-To Email** | hairbybrendalee@gmail.com | Static value |
+| **Subject** | Welcome to Beauty Quest — 20% off your first visit | Static value |
+| **HTML Content** | Final HTML from Brevo template | Static template (no variables) |
+
+---
+
+## 13. Quick Remap Checklist
+
+**Use this when Zapier shows "yellow" warnings or after DNS changes:**
+
+### Step-by-Step Remap Procedure
+
+#### 1. Refresh Netlify Trigger
+- Go to **Step 1** (Netlify trigger)
+- **Reselect Site and Form:** `brenda_leads`
+- Click **"Test Trigger"** to pull fresh sample data
+
+#### 2. Remap Brevo Contact Step (Step 5)
+Map the following fields to new sample data:
+- **Email** → `Email_Clean`
+- **Mobile** → `Phone_E164` 
+- **FIRSTNAME** → `FirstName` (or `Name`)
+- **CONSENT_EMAIL** → `ConsentEmail`
+- **CONSENT_SMS** → `ConsentSMS`
+- **GOALS** → `goals`
+- **List** → "Brenda VIP"
+
+#### 3. Remap Email Step (Step 6)
+- **To** → `Email_Clean`
+- Confirm sender/reply-to settings unchanged
+
+#### 4. Test & Verify
+- **Test Step 5** (Brevo contact creation)
+- **Test Step 6** (Email send)
+- Verify contact appears in Brevo logs
+- Check email delivery
+
+---
+
+## 14. System Account Access
+
+### Critical Service Accounts
+
+#### Brevo (Email & CRM)
+- **Account:** Niftythrifters210@gmail.com
+- **Purpose:** Email sending, contact management, domain authentication
+
+#### Zapier (Automation)
+- **Account:** Raidpiratex@gmail.com  
+- **Purpose:** Form processing automation, data transformation
+
+#### ImprovMX (Email Forwarding)
+- **Account:** hairbybrendalee@gmail.com
+- **Purpose:** Domain email forwarding to Gmail
+
+#### Netlify (Site Hosting)
+- **Account:** Ghostmacc
+- **Purpose:** Site hosting, form processing, DNS management
+
+#### GitHub (Code Repository)
+- **Repository:** Hair-By-Brenda-Lee
+- **Access:** GitHub credentials
+- **Purpose:** Source code management, deployment trigger
+
+### Account Security Notes
+- **2FA Recommended:** Enable on all critical accounts
+- **Password Management:** Store credentials securely
+- **Access Audit:** Review account access quarterly
+- **Backup Access:** Ensure multiple team members have access
+
+---
+
+## 15. Developer Notes for Next Team
+
+### Critical File Locations
+```
+index.html                 # Main site with Netlify form integration
+├── Form: brenda_leads     # Located in "Join" section  
+├── data-netlify="true"    # Required for Netlify processing
+├── Honeypot: bot-field    # Spam protection
+└── JavaScript: inline     # Phone + boolean normalization
+
+scripts/wire_hair_images.py   # One-time image asset patcher
+├── Purpose: Replace Unsplash placeholders
+├── Function: Expand gallery grid when assets present
+└── Status: Run once, now dormant
+```
+
+### Key Integration Points
+1. **Form → Netlify:** `data-netlify="true"` + hidden `form-name` field
+2. **Netlify → Zapier:** Webhook trigger on `brenda_leads` submissions  
+3. **Zapier → Brevo:** Contact creation + transactional email send
+4. **Brevo → Gmail:** Reply-to forwarding via ImprovMX
+
+### Maintenance Checklist
+- **Monthly:** Verify email deliverability across providers
+- **Quarterly:** Test complete form → email automation flow
+- **DNS Changes:** Use remap checklist to restore Zapier connections
+- **Form Updates:** Maintain field name consistency for Zapier mapping
+
+---
+
+**End of Technical Handoff Documentation**  
+**Total Sections: 15 | Complete Coverage: Infrastructure → Code → Operations → Access**
