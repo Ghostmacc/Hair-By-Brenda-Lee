@@ -314,19 +314,12 @@ html { scroll-behavior: smooth; }
         </div>
       </div>
       <div class="rounded-2xl bg-white text-gray-900 p-6" id="join-form">
-        <form name="brenda_leads" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="grid gap-4">
+        <form name="brenda_leads" method="POST" data-netlify="true" action="/thanks" class="grid gap-4">
           <input type="hidden" name="form-name" value="brenda_leads">
-          <p class="hidden"><label>Don’t fill this out: <input name="bot-field"></label></p>
-          <div><label class="text-sm">Name</label><input name="name" required class="mt-1 w-full rounded-xl border border-gray-300 px-3 py-2" placeholder="Your name"></div>
+          <div><label class="text-sm">Name</label><input type="text" name="name" required class="mt-1 w-full rounded-xl border border-gray-300 px-3 py-2" placeholder="Your name"></div>
           <div><label class="text-sm">Email</label><input type="email" name="email" required class="mt-1 w-full rounded-xl border border-gray-300 px-3 py-2" placeholder="you@example.com"></div>
-          <div><label class="text-sm" for="phone">Mobile (for SMS updates)</label><input type="tel" id="phone" name="phone" inputmode="tel" autocomplete="tel" placeholder="(714) 271-2751" pattern="^\+1\d{10}$" class="mt-1 w-full rounded-xl border border-gray-300 px-3 py-2"><small class="text-xs text-gray-500">We'll auto-format to +1XXXXXXXXXX for SMS notices.</small></div>
-          <div class="grid md:grid-cols-2 gap-3">
-            <label class="inline-flex items-start gap-2 text-sm"><input type="checkbox" id="consent_email" name="consent_email" value="true" required> <span>I agree to receive emails from Brenda. I can unsubscribe anytime.</span></label>
-            <label class="inline-flex items-start gap-2 text-sm"><input type="checkbox" id="consent_sms" name="consent_sms" value="true"> <span>Optional: I agree to receive SMS updates. Msg &amp; data rates may apply. Reply STOP to opt out.</span></label>
-          </div>
-          <div><label class="text-sm">What are your hair goals?</label><textarea name="goals" rows="3" class="mt-1 w-full rounded-xl border border-gray-300 px-3 py-2" placeholder="Bridal trial date, color refresh, extensions consult…"></textarea></div>
-          <button type="submit" class="rounded-2xl bg-gray-900 text-white px-6 py-3 font-medium hover:bg-gray-800">Join &amp; Request Booking</button>
-          <p class="text-xs text-gray-600">By submitting, you agree to our <a href="#privacy" class="underline">Privacy Policy</a>. No spam. Unsubscribe anytime.</p>
+          <div><label class="text-sm">Phone</label><input type="tel" name="phone" class="mt-1 w-full rounded-xl border border-gray-300 px-3 py-2" placeholder="(714) 271-2751"></div>
+          <button type="submit" class="rounded-2xl bg-gray-900 text-white px-6 py-3 font-medium hover:bg-gray-800">Join Email/SMS List</button>
         </form>
       </div>
     </div>
@@ -361,60 +354,5 @@ html { scroll-behavior: smooth; }
     <div class="text-center text-xs text-gray-500 pb-8">© 2025 Brenda • Bridal & Color</div>
   </footer>
 
-<script>
-(function() {
-  function toE164(v) {
-    if (!v) return "";
-    v = (v + "").replace(/\D+/g, "");          // strip non-digits
-    if (v.startsWith("1") && v.length === 11) return "+" + v;
-    if (v.length === 10) return "+1" + v;
-    if (v.startsWith("+1") && v.length === 12) return v;
-    return v; // leave other countries as-is (or add logic later)
-  }
-
-  function setBooleanField(form, name, checked) {
-    // Remove any old normalized hidden field
-    var old = form.querySelector('input[type="hidden"][name="'+name+'"]');
-    if (old) old.remove();
-    // If checkbox is unchecked, Netlify would send nothing—so add a hidden "false"
-    if (!checked) {
-      var hid = document.createElement("input");
-      hid.type  = "hidden";
-      hid.name  = name;
-      hid.value = "false";
-      form.appendChild(hid);
-    } else {
-      // If checked, ensure its value is literally "true"
-      var cb = form.querySelector('input[type="checkbox"][name="'+name+'"]');
-      if (cb) cb.value = "true";
-    }
-  }
-
-  var phoneEl   = document.getElementById("phone");
-  var emailCB   = document.getElementById("consent_email");
-  var smsCB     = document.getElementById("consent_sms");
-  var form      = (phoneEl && phoneEl.closest("form")) || null;
-
-  if (phoneEl) {
-    phoneEl.addEventListener("blur", function() {
-      var f = toE164(phoneEl.value);
-      if (f) phoneEl.value = f;
-    });
-  }
-
-  if (form) {
-    form.addEventListener("submit", function() {
-      // Normalize phone
-      if (phoneEl) {
-        var f = toE164(phoneEl.value);
-        if (f) phoneEl.value = f;
-      }
-      // Normalize booleans so Netlify always sends values
-      if (emailCB) setBooleanField(form, "consent_email", !!emailCB.checked);
-      if (smsCB)   setBooleanField(form, "consent_sms",   !!smsCB.checked);
-    });
-  }
-})();
-</script>
 </body>
 </html>
