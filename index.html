@@ -9,7 +9,36 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji"} .container{max-width:80rem}</style>
+  <style>body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji"} .container{max-width:80rem}
+
+/* Hero CTA Styles */
+:root{
+  --yelp:#FFD34D; --yelp-hover:#FFC933;
+  --purple-1:#8B5CF6; --purple-2:#7C3AED;
+}
+
+.hero-ctas{display:flex; flex-wrap:wrap; gap:16px; margin-top:24px}
+.cta{
+  display:flex; align-items:center; justify-content:center; text-align:center;
+  min-width:184px; height:56px; padding:0 22px; border-radius:18px;
+  font-weight:700; line-height:1.05; text-decoration:none;
+  border:1px solid #e5e7eb; background:#fff; color:#111;
+  transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+  box-shadow:0 0 0 rgba(0,0,0,0);
+}
+.cta:hover,.cta:focus{
+  transform:translateY(-1px);
+  box-shadow:0 8px 24px rgba(17,17,17,.08);
+}
+
+.cta--dark{background:#0f1623; color:#fff; border-color:#0f1623}
+.cta--yelp{background:var(--yelp); color:#111; border-color:#F2C53C}
+.cta--yelp:hover{background:var(--yelp-hover)}
+.cta--purple{
+  background:linear-gradient(135deg, var(--purple-1) 0%, var(--purple-2) 100%);
+  color:#fff; border-color:transparent;
+}
+.cta--outline{background:#fff}</style>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "HairSalon", "name": "Brenda \u2022 Bridal & Color", "url": "https://brendasanderscurlup.glossgenius.com/", "image": "https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=1600&auto=format&fit=crop", "telephone": "+17147036655", "address": {"@type": "PostalAddress", "addressLocality": "Hot Springs", "addressRegion": "AR", "addressCountry": "US"}, "sameAs": ["https://brendasanderscurlup.glossgenius.com/", "https://www.instagram.com/hair_by_brenda_lee?igsh=MWxsMjE1aHV5ODNjaA%3D%3D&utm_source=qr", "https://www.facebook.com/share/1CxTLXvyMn/?mibextid=wwXIfr"], "description": "Bridal hair and color specialist with 23 years of experience. Former Las Vegas bridal boutique owner who styled thousands of brides. Now in Hot Springs, AR."}</script>
 <link href="https://fonts.googleapis.com/css2?family=Allura&display=swap" rel="stylesheet">
 
@@ -86,11 +115,22 @@
   <span class="ml-3 font-signature text-3xl md:text-4xl text-violet-700 align-middle">Brenda</span>
 </span></h1>
         <p class="mt-5 text-lg text-gray-700">23 years of artistry from California to Las Vegas to Texas—now in Hot Springs. Bridal styling, color, and classic cuts by appointment.</p>
-        <div class="mt-8 flex flex-wrap items-center gap-3">
-          <a href="https://brendasanderscurlup.glossgenius.com/" target="_blank" rel="noopener" class="rounded-2xl bg-gray-900 text-white px-6 py-3 font-medium hover:bg-gray-800">Book Online</a>
-          <a href="https://www.yelp.com/biz/hair-by-brenda-lee-hot-springs?utm_campaign=www_business_share_popup&amp;utm_medium=copy_link&amp;utm_source=(direct)" target="_blank" rel="noopener" class="rounded-2xl border border-red-500 text-red-600 px-6 py-3 font-semibold hover:bg-red-50">★ Yelp Reviews</a>
-          <a href="tel:+15019435969" class="rounded-2xl border border-gray-300 px-6 py-3 font-medium hover:bg-gray-50">Call / Text (501) 943-5969</a>
-          <a href="#join" class="rounded-2xl border border-gray-300 px-6 py-3 font-medium hover:bg-gray-50">Join Email/SMS List</a>
+        <div class="hero-ctas">
+          <a class="cta cta--dark" href="https://brendasanderscurlup.glossgenius.com/" target="_blank" rel="noopener">
+            Book Online
+          </a>
+          <a class="cta cta--yelp" href="https://www.yelp.com/biz/hair-by-brenda-lee-hot-springs?utm_campaign=www_business_share_popup&utm_medium=copy_link&utm_source=(direct)" target="_blank" rel="noopener">
+            ★ Yelp Reviews
+          </a>
+          <a class="cta cta--purple" href="https://brendasanderscurlup.glossgenius.com/about" target="_blank" rel="noopener">
+            Read 100+ Reviews
+          </a>
+          <a class="cta cta--outline" href="tel:+15019435969">
+            Call / Text (501) 943-5969
+          </a>
+          <a class="cta cta--outline" href="#join">
+            Join Email/SMS List
+          </a>
         </div>
         <div class="mt-6 flex flex-wrap items-center gap-4 text-sm text-gray-600">
           <div class="inline-flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-emerald-500"></span> 23 Years Experience</div>
