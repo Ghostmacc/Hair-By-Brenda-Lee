@@ -345,10 +345,6 @@ html { scroll-behavior: smooth; }
             <small class="text-xs text-gray-500">We'll normalize to +1XXXXXXXXXX in the automation.</small>
           </div>
 
-          <!-- Hidden defaults ensure checkbox keys always exist in Zapier -->
-          <input type="hidden" name="consent_email" value="false">
-          <input type="hidden" name="consent_sms" value="false">
-          
           <div class="grid md:grid-cols-2 gap-3">
             <label class="inline-flex items-start gap-2 text-sm">
               <input type="checkbox" id="consent_email" name="consent_email" value="true" required>
@@ -404,6 +400,62 @@ html { scroll-behavior: smooth; }
     </div>
     <div class="text-center text-xs text-gray-500 pb-8">© 2025 Brenda • Bridal & Color</div>
   </footer>
+
+<script>
+(function() {
+  function toE164(v) {
+    if (!v) return "";
+    v = (v + "").replace(/\D+/g, "");          // strip non-digits
+    if (v.startsWith("1") && v.length === 11) return "+" + v;
+    if (v.length === 10) return "+1" + v;
+    if (v.startsWith("+1") && v.length === 12) return v;
+    return v; // leave other countries as-is (or add logic later)
+  }
+
+  function setBooleanField(form, name, checked) {
+    // Remove any old normalized hidden field
+    var old = form.querySelector('input[type="hidden"][name="'+name+'"]');
+    if (old) old.remove();
+    // If checkbox is unchecked, Netlify would send nothing—so add a hidden "false"
+    if (!checked) {
+      var hid = document.createElement("input");
+      hid.type  = "hidden";
+      hid.name  = name;
+      hid.value = "false";
+      form.appendChild(hid);
+    } else {
+      // If checked, ensure its value is literally "true"
+      var cb = form.querySelector('input[type="checkbox"][name="'+name+'"]');
+      if (cb) cb.value = "true";
+    }
+  }
+
+  var phoneEl   = document.getElementById("phone");
+  var emailCB   = document.getElementById("consent_email");
+  var smsCB     = document.getElementById("consent_sms");
+  var form      = (phoneEl && phoneEl.closest("form")) || null;
+
+  if (phoneEl) {
+    phoneEl.addEventListener("blur", function() {
+      var f = toE164(phoneEl.value);
+      if (f) phoneEl.value = f;
+    });
+  }
+
+  if (form) {
+    form.addEventListener("submit", function() {
+      // Normalize phone
+      if (phoneEl) {
+        var f = toE164(phoneEl.value);
+        if (f) phoneEl.value = f;
+      }
+      // Normalize booleans so Netlify always sends values
+      if (emailCB) setBooleanField(form, "consent_email", !!emailCB.checked);
+      if (smsCB)   setBooleanField(form, "consent_sms",   !!smsCB.checked);
+    });
+  }
+})();
+</script>
 
 </body>
 </html>
