@@ -38,7 +38,36 @@
   background:linear-gradient(135deg, var(--purple-1) 0%, var(--purple-2) 100%);
   color:#fff; border-color:transparent;
 }
-.cta--outline{background:#fff}</style>
+.cta--outline{background:#fff}
+
+/* Nav CTA Styles */
+.nav-cta{
+  display:inline-flex; align-items:center; gap:.5rem;
+  padding:.6rem 1rem; border-radius:999px;
+  font-weight:700; line-height:1; text-decoration:none; white-space:nowrap;
+  transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+
+.nav-cta--promo{
+  background:#7C3AED;
+  color:#fff;
+  box-shadow:0 6px 18px rgba(124,58,237,.25);
+}
+.nav-cta--promo:hover{
+  transform:translateY(-1px);
+  box-shadow:0 10px 24px rgba(124,58,237,.35);
+}
+
+.nav-cta__sub{
+  font-size:.72rem; font-weight:600;
+  padding:.2rem .5rem; border-radius:999px;
+  background:rgba(255,255,255,.15);
+}
+
+@media (max-width: 640px){
+  .nav-cta{ padding:.55rem .85rem; }
+  .nav-cta__sub{ display:none; }
+}</style>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "HairSalon", "name": "Brenda \u2022 Bridal & Color", "url": "https://brendasanderscurlup.glossgenius.com/", "image": "https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=1600&auto=format&fit=crop", "telephone": "+17147036655", "address": {"@type": "PostalAddress", "addressLocality": "Hot Springs", "addressRegion": "AR", "addressCountry": "US"}, "sameAs": ["https://brendasanderscurlup.glossgenius.com/", "https://www.instagram.com/hair_by_brenda_lee?igsh=MWxsMjE1aHV5ODNjaA%3D%3D&utm_source=qr", "https://www.facebook.com/share/1CxTLXvyMn/?mibextid=wwXIfr"], "description": "Bridal hair and color specialist with 23 years of experience. Former Las Vegas bridal boutique owner who styled thousands of brides. Now in Hot Springs, AR."}</script>
 <link href="https://fonts.googleapis.com/css2?family=Allura&display=swap" rel="stylesheet">
 
@@ -75,7 +104,11 @@
         <a href="#gallery" class="hover:text-gray-700">Gallery</a>
         <a href="#reviews" class="hover:text-gray-700">Reviews</a>
         <a href="#faq" class="hover:text-gray-700">FAQ</a>
-        <a href="#join" class="hover:text-gray-700">Join</a>
+        <a href="https://brendasanderscurlup.glossgenius.com/?utm_source=site&utm_medium=nav&utm_campaign=welcome20"
+           class="nav-cta nav-cta--promo">
+          <span class="nav-cta__label">Get 20% Off</span>
+          <span class="nav-cta__sub">first visit</span>
+        </a>
       </nav>
       
       <div class="hidden sm:flex items-center gap-2 mr-2">
