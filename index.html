@@ -163,10 +163,12 @@ html { scroll-behavior: smooth; }
         </div>
       </div>
       <!-- Mobile menu button -->
-      <button class="md:hidden p-2" data-menu-toggle aria-label="Toggle menu">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+      <button id="hamburgerBtn" type="button" aria-expanded="false" aria-controls="mobileNav"
+              class="md:hidden p-2" onclick="openMenu(true)">
+        <svg width="24" height="24" fill="currentColor" aria-hidden="true">
+          <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>
+        <span class="sr-only">Open menu</span>
       </button>
 
       <!-- Desktop navigation -->
@@ -205,44 +207,34 @@ html { scroll-behavior: smooth; }
       </div>
     </div>
 
-    <!-- SCRIM (click to close) -->
-    <div id="menuScrim"
-         class="md:hidden fixed inset-0 z-40 hidden bg-black/40 mobile-nav-overlay"></div>
-
     <!-- MOBILE MENU PANEL -->
-    <div id="mobileMenu"
-         class="md:hidden fixed inset-y-0 right-0 z-50 hidden w-full max-w-sm mobile-nav-sheet overflow-y-auto">
-      <div class="px-4 py-6">
-        <div class="flex items-center justify-between mb-6">
+    <nav id="mobileNav" class="fixed inset-0 z-50 hidden" aria-hidden="true">
+      <!-- backdrop panel (solid/blurred) -->
+      <div class="absolute inset-0 bg-white/95 backdrop-blur shadow-xl"></div>
+
+      <!-- content container -->
+      <div class="relative z-10 max-w-xl mx-auto p-5">
+        <div class="flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <div class="h-8 w-8 rounded-full bg-gray-900 text-white flex items-center justify-center font-bold text-sm">B</div>
-            <div class="font-semibold">Menu</div>
+            <div class="h-10 w-10 rounded-full bg-gray-900 text-white grid place-items-center font-semibold">B</div>
+            <div class="text-lg font-medium">Menu</div>
           </div>
-          <button class="p-2" data-menu-close aria-label="Close menu">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
+          <button type="button" class="p-3 -mr-2" aria-label="Close menu" onclick="openMenu(false)">
+            ✕
           </button>
         </div>
-        
-        <nav class="space-y-1">
-          <a href="#services" class="block py-3 text-base text-gray-900 hover:text-gray-700">Services</a>
-          <a href="#bridal" class="block py-3 text-base text-gray-900 hover:text-gray-700">Bridal</a>
-          <a href="#gallery" class="block py-3 text-base text-gray-900 hover:text-gray-700">Gallery</a>
-          <a href="#reviews" class="block py-3 text-base text-gray-900 hover:text-gray-700">Reviews</a>
-          <a href="#faq" class="block py-3 text-base text-gray-900 hover:text-gray-700">FAQ</a>
-          <a href="/blog/" class="block py-3 text-base text-gray-900 hover:text-gray-700">Blog</a>
-        </nav>
 
-        <div class="mt-6 pt-4 border-t border-gray-200">
-          <a href="https://brendasanderscurlup.glossgenius.com/services?utm_source=site&utm_medium=nav&utm_campaign=welcome20"
-             class="block w-full text-center nav-cta nav-cta--promo">
-            <span class="nav-cta__label">Get 20% Off</span>
-            <span class="nav-cta__sub">first visit</span>
-          </a>
+        <!-- your mobile links go here -->
+        <div class="mt-6 space-y-3 text-lg">
+          <a href="#services" class="block">Services</a>
+          <a href="#bridal" class="block">Bridal</a>
+          <a href="#gallery" class="block">Gallery</a>
+          <a href="#reviews" class="block">Reviews</a>
+          <a href="#faq" class="block">FAQ</a>
+          <a href="/blog/" class="block">Blog</a>
         </div>
       </div>
-    </div>
+    </nav>
   </header>
 
   <section class="relative isolate overflow-hidden">
@@ -516,21 +508,32 @@ html { scroll-behavior: smooth; }
   </footer>
 
 <script>
-  // minimal, framework-agnostic toggler
-  (function(){
-    const openBtn  = document.querySelector('[data-menu-toggle]');
-    const closeBtn = document.querySelector('[data-menu-close]');
-    const panel = document.getElementById('mobileMenu');
-    const overlay = document.getElementById('menuScrim');
-    const show = (on)=> {
-      panel.classList.toggle('hidden', !on);
-      overlay.classList.toggle('hidden', !on);
-      document.body.classList.toggle('overflow-hidden', on);
-    };
-    openBtn && openBtn.addEventListener('click', ()=>show(true));
-    overlay && overlay.addEventListener('click', ()=>show(false));
-    closeBtn && closeBtn.addEventListener('click', ()=>show(false));
-  })();
+  function openMenu(open) {
+    var nav = document.getElementById('mobileNav');
+    var overlay = document.getElementById('menuOverlay');
+    var btn = document.getElementById('hamburgerBtn');
+    if (!nav || !overlay || !btn) return;
+
+    if (open) {
+      nav.classList.remove('hidden');
+      overlay.classList.remove('pointer-events-none');
+      // fade in overlay
+      requestAnimationFrame(function(){ overlay.classList.add('opacity-100'); });
+      btn.setAttribute('aria-expanded','true');
+      nav.setAttribute('aria-hidden','false');
+      overlay.onclick = function(){ openMenu(false); };
+    } else {
+      overlay.classList.remove('opacity-100');            // fade out
+      overlay.onclick = null;
+      overlay.addEventListener('transitionend', function handler(){
+        overlay.removeEventListener('transitionend', handler);
+        nav.classList.add('hidden');
+        overlay.classList.add('pointer-events-none');
+      });
+      btn.setAttribute('aria-expanded','false');
+      nav.setAttribute('aria-hidden','true');
+    }
+  }
 
   // Form functionality
   function toE164(v) {
@@ -585,6 +588,9 @@ html { scroll-behavior: smooth; }
     });
   }
 </script>
+
+<!-- overlay used when mobile menu is open -->
+<div id="menuOverlay" class="fixed inset-0 bg-black/40 opacity-0 pointer-events-none z-40 transition-opacity"></div>
 
 </body>
 </html>
