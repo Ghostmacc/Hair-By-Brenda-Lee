@@ -164,7 +164,7 @@ html { scroll-behavior: smooth; }
       </div>
       <!-- Mobile menu button -->
       <button id="hamburgerBtn" type="button" aria-expanded="false" aria-controls="mobileNav"
-              class="md:hidden p-2" onclick="openMenu(true)">
+              class="md:hidden p-2" data-menu-open>
         <svg width="24" height="24" fill="currentColor" aria-hidden="true">
           <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>
@@ -207,34 +207,6 @@ html { scroll-behavior: smooth; }
       </div>
     </div>
 
-    <!-- MOBILE MENU PANEL -->
-    <nav id="mobileNav" class="fixed inset-0 z-50 hidden" aria-hidden="true">
-      <!-- backdrop panel (solid/blurred) -->
-      <div class="absolute inset-0 bg-white/95 backdrop-blur shadow-xl"></div>
-
-      <!-- content container -->
-      <div class="relative z-10 max-w-xl mx-auto p-5">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div class="h-10 w-10 rounded-full bg-gray-900 text-white grid place-items-center font-semibold">B</div>
-            <div class="text-lg font-medium">Menu</div>
-          </div>
-          <button type="button" class="p-3 -mr-2" aria-label="Close menu" onclick="openMenu(false)">
-            ✕
-          </button>
-        </div>
-
-        <!-- your mobile links go here -->
-        <div class="mt-6 space-y-3 text-lg">
-          <a href="#services" class="block">Services</a>
-          <a href="#bridal" class="block">Bridal</a>
-          <a href="#gallery" class="block">Gallery</a>
-          <a href="#reviews" class="block">Reviews</a>
-          <a href="#faq" class="block">FAQ</a>
-          <a href="/blog/" class="block">Blog</a>
-        </div>
-      </div>
-    </nav>
   </header>
 
   <section class="relative isolate overflow-hidden">
@@ -309,17 +281,7 @@ html { scroll-behavior: smooth; }
         </div>
       </div>
 
-      <!-- BLOG TEASER: desktop only -->
-      <div id="blog-teaser" class="hidden md:block md:absolute md:right-6 md:top-80 md:w-[360px] z-10">
-        <div class="rounded-2xl bg-white/85 backdrop-blur border border-gray-200 p-5 shadow-sm">
-          <div class="text-xs text-gray-500">From the blog</div>
-          <a href="/blog/bridal-hair-trial-checklist/" class="mt-1 block text-lg font-semibold hover:underline">
-            Hot Springs Bridal Hair Trial Checklist
-          </a>
-          <p class="mt-2 text-sm text-gray-600">What to bring and when to book—local tips from Brenda.</p>
-          <a href="/blog/" class="mt-3 inline-block text-sm font-medium underline">More posts</a>
-        </div>
-      </div>
+      <!-- Blog teaser removed on request -->
 
     </div>
   </section>
@@ -507,90 +469,131 @@ html { scroll-behavior: smooth; }
     <div class="text-center text-xs text-gray-500 pb-8">© 2025 Brenda • Bridal & Color</div>
   </footer>
 
-<script>
-  function openMenu(open) {
-    var nav = document.getElementById('mobileNav');
-    var overlay = document.getElementById('menuOverlay');
-    var btn = document.getElementById('hamburgerBtn');
-    if (!nav || !overlay || !btn) return;
+<!-- overlay (dim background when menu open) -->
+<div id="menuOverlay"
+     class="fixed inset-0 bg-black/40 opacity-0 pointer-events-none z-[80] transition-opacity duration-200"></div>
 
-    if (open) {
+<!-- MOBILE MENU PANEL -->
+<nav id="mobileNav" class="fixed inset-0 z-[90] hidden" aria-hidden="true">
+  <!-- solid/blurred sheet so hero doesn't bleed through -->
+  <div class="absolute inset-0 bg-white/95 backdrop-blur-lg shadow-2xl"></div>
+
+  <!-- content -->
+  <div class="relative z-10 max-w-xl mx-auto p-6">
+    <div class="flex items-center justify-between">
+      <div class="text-lg font-medium">Menu</div>
+      <button type="button" class="p-3 -mr-2" aria-label="Close menu" data-menu-close>✕</button>
+    </div>
+
+    <nav class="mt-6 space-y-4 text-lg">
+      <a href="#services" class="block">Services</a>
+      <a href="#bridal"   class="block">Bridal</a>
+      <a href="#gallery"  class="block">Gallery</a>
+      <a href="#reviews"  class="block">Reviews</a>
+      <a href="#faq"      class="block">FAQ</a>
+      <a href="/blog/"    class="block">Blog</a>  <!-- ← Blog lives in hamburger -->
+    </nav>
+  </div>
+</nav>
+
+<script>
+(function () {
+  var nav = document.getElementById('mobileNav');
+  var overlay = document.getElementById('menuOverlay');
+  if (!nav || !overlay) return;
+
+  var openers = [].slice.call(document.querySelectorAll('[data-menu-open], #hamburgerBtn'));
+  var closers = [].slice.call(document.querySelectorAll('[data-menu-close]'));
+
+  function lockScroll(on){
+    document.documentElement.classList.toggle('overflow-hidden', on);
+    document.body.classList.toggle('overflow-hidden', on);
+  }
+
+  function openMenu(open){
+    if (open){
       nav.classList.remove('hidden');
       overlay.classList.remove('pointer-events-none');
-      // fade in overlay
       requestAnimationFrame(function(){ overlay.classList.add('opacity-100'); });
-      btn.setAttribute('aria-expanded','true');
+      (openers[0]||{}).setAttribute?.('aria-expanded','true');
       nav.setAttribute('aria-hidden','false');
       overlay.onclick = function(){ openMenu(false); };
+      lockScroll(true);
     } else {
-      overlay.classList.remove('opacity-100');            // fade out
+      overlay.classList.remove('opacity-100');
       overlay.onclick = null;
-      overlay.addEventListener('transitionend', function handler(){
-        overlay.removeEventListener('transitionend', handler);
+      overlay.addEventListener('transitionend', function h(){
+        overlay.removeEventListener('transitionend', h);
         nav.classList.add('hidden');
         overlay.classList.add('pointer-events-none');
       });
-      btn.setAttribute('aria-expanded','false');
+      (openers[0]||{}).setAttribute?.('aria-expanded','false');
       nav.setAttribute('aria-hidden','true');
+      lockScroll(false);
     }
   }
 
-  // Form functionality
-  function toE164(v) {
-    if (!v) return "";
-    v = (v + "").replace(/\D+/g, "");          // strip non-digits
-    if (v.startsWith("1") && v.length === 11) return "+" + v;
-    if (v.length === 10) return "+1" + v;
-    if (v.startsWith("+1") && v.length === 12) return v;
-    return v; // leave other countries as-is (or add logic later)
+  openers.forEach(function(b){ b.addEventListener('click', function(e){ e.preventDefault(); openMenu(true); }); });
+  closers.forEach(function(b){ b.addEventListener('click', function(e){ e.preventDefault(); openMenu(false); }); });
+
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && !nav.classList.contains('hidden')) openMenu(false);
+  });
+})();
+
+// Form functionality
+function toE164(v) {
+  if (!v) return "";
+  v = (v + "").replace(/\D+/g, "");          // strip non-digits
+  if (v.startsWith("1") && v.length === 11) return "+" + v;
+  if (v.length === 10) return "+1" + v;
+  if (v.startsWith("+1") && v.length === 12) return v;
+  return v; // leave other countries as-is (or add logic later)
+}
+
+function setBooleanField(form, name, checked) {
+  // Remove any old normalized hidden field
+  var old = form.querySelector('input[type="hidden"][name="'+name+'"]');
+  if (old) old.remove();
+  // If checkbox is unchecked, Netlify would send nothing—so add a hidden "false"
+  if (!checked) {
+    var hid = document.createElement("input");
+    hid.type  = "hidden";
+    hid.name  = name;
+    hid.value = "false";
+    form.appendChild(hid);
+  } else {
+    // If checked, ensure its value is literally "true"
+    var cb = form.querySelector('input[type="checkbox"][name="'+name+'"]');
+    if (cb) cb.value = "true";
   }
+}
 
-  function setBooleanField(form, name, checked) {
-    // Remove any old normalized hidden field
-    var old = form.querySelector('input[type="hidden"][name="'+name+'"]');
-    if (old) old.remove();
-    // If checkbox is unchecked, Netlify would send nothing—so add a hidden "false"
-    if (!checked) {
-      var hid = document.createElement("input");
-      hid.type  = "hidden";
-      hid.name  = name;
-      hid.value = "false";
-      form.appendChild(hid);
-    } else {
-      // If checked, ensure its value is literally "true"
-      var cb = form.querySelector('input[type="checkbox"][name="'+name+'"]');
-      if (cb) cb.value = "true";
-    }
-  }
+var phoneEl   = document.getElementById("phone");
+var emailCB   = document.getElementById("consent_email");
+var smsCB     = document.getElementById("consent_sms");
+var form      = (phoneEl && phoneEl.closest("form")) || null;
 
-  var phoneEl   = document.getElementById("phone");
-  var emailCB   = document.getElementById("consent_email");
-  var smsCB     = document.getElementById("consent_sms");
-  var form      = (phoneEl && phoneEl.closest("form")) || null;
+if (phoneEl) {
+  phoneEl.addEventListener("blur", function() {
+    var f = toE164(phoneEl.value);
+    if (f) phoneEl.value = f;
+  });
+}
 
-  if (phoneEl) {
-    phoneEl.addEventListener("blur", function() {
+if (form) {
+  form.addEventListener("submit", function() {
+    // Normalize phone
+    if (phoneEl) {
       var f = toE164(phoneEl.value);
       if (f) phoneEl.value = f;
-    });
-  }
-
-  if (form) {
-    form.addEventListener("submit", function() {
-      // Normalize phone
-      if (phoneEl) {
-        var f = toE164(phoneEl.value);
-        if (f) phoneEl.value = f;
-      }
-      // Normalize booleans so Netlify always sends values
-      if (emailCB) setBooleanField(form, "consent_email", !!emailCB.checked);
-      if (smsCB)   setBooleanField(form, "consent_sms",   !!smsCB.checked);
-    });
-  }
+    }
+    // Normalize booleans so Netlify always sends values
+    if (emailCB) setBooleanField(form, "consent_email", !!emailCB.checked);
+    if (smsCB)   setBooleanField(form, "consent_sms",   !!smsCB.checked);
+  });
+}
 </script>
-
-<!-- overlay used when mobile menu is open -->
-<div id="menuOverlay" class="fixed inset-0 bg-black/40 opacity-0 pointer-events-none z-40 transition-opacity"></div>
 
 </body>
 </html>
