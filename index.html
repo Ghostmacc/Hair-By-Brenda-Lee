@@ -150,10 +150,12 @@ html { scroll-behavior: smooth; }
     #promo-card { transform: translateX(6px); } /* ~6px "smidge" */
   }
 
-  /* hide any stray blog teaser cards */
+  /* hide any stray blog teaser cards - CACHE BUST */
   #blog-teaser,
   .hero-blog-teaser,
-  .hero-blog-inline {
+  .hero-blog-inline,
+  .mobile-blog-teaser,
+  .hero-blog-card {
     display: none !important;
   }
 </style>
