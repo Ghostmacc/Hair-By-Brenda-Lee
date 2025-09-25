@@ -145,9 +145,13 @@ html { scroll-behavior: smooth; }
     #blog-teaser { display: none !important; }
   }
 
-  /* --- Mobile: nudge the New-here promo card slightly right --- */
+  /* --- Mobile: center the New-here promo card --- */
   @media (max-width: 767px){
-    #promo-card { transform: translateX(6px); } /* ~6px "smidge" */
+    #promo-card { 
+      margin-left: auto;
+      margin-right: auto;
+      transform: none;
+    }
   }
 
   /* hide any stray blog teaser cards - CACHE BUST */
