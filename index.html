@@ -149,6 +149,13 @@ html { scroll-behavior: smooth; }
   @media (max-width: 767px){
     #promo-card { transform: translateX(6px); } /* ~6px "smidge" */
   }
+
+  /* hide any stray blog teaser cards */
+  #blog-teaser,
+  .hero-blog-teaser,
+  .hero-blog-inline {
+    display: none !important;
+  }
 </style>
 
 </head>
@@ -262,18 +269,6 @@ html { scroll-behavior: smooth; }
         <p class="hero__promo-note">New clients • One time use • Some services excluded</p>
       </aside>
 
-      <!-- Mobile blog mini-teaser (won't push hero CTAs down) -->
-      <div class="md:hidden mt-4 px-4">
-        <div class="rounded-2xl border border-gray-200 bg-white/90 backdrop-blur p-4 shadow-sm">
-          <div class="text-xs text-gray-500">From the blog</div>
-          <a href="/blog/bridal-hair-trial-checklist/" class="block mt-1 font-semibold">
-            Hot Springs Bridal Hair Trial Checklist
-          </a>
-          <div class="mt-2">
-            <a href="/blog/" class="text-sm font-medium underline">More posts</a>
-          </div>
-        </div>
-      </div>
 
       <!-- Blog teaser removed on request -->
 
