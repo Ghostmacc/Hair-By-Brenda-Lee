@@ -6,6 +6,18 @@
 <script src="./support.js"></script>
 </head>
 <body>
+<!-- Netlify Forms detection: static form so the build-time scanner registers
+     the brenda_leads form + fields even though the visible form is JS-rendered.
+     The live submission is a fetch() POST from goThanks(); this stays hidden. -->
+<form name="brenda_leads" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input type="hidden" name="form-name" value="brenda_leads">
+  <input name="bot-field">
+  <input type="text" name="name">
+  <input type="email" name="email">
+  <input type="tel" name="phone">
+  <input type="checkbox" name="consent_email" value="true">
+  <input type="checkbox" name="consent_sms" value="true">
+</form>
 <x-dc>
 <helmet data-dc-atomics>
 <title>Beauty Quest · Bridal &amp; Color · Hot Springs, AR</title>
@@ -163,9 +175,11 @@
     </div>
     <div style="background:#fff;color:#4d2438;border-radius:30px;padding:32px 34px;box-shadow:0 24px 60px rgba(0,0,0,.25)">
       <div style="display:grid;gap:14px">
-        <input placeholder="Your name" style="width:100%;box-sizing:border-box;padding:14px 18px;border:2px solid #f4d3e2;border-radius:16px;background:#fdf7fa;font:inherit;font-size:14.5px;color:#4d2438">
-        <input placeholder="you@example.com" style="width:100%;box-sizing:border-box;padding:14px 18px;border:2px solid #f4d3e2;border-radius:16px;background:#fdf7fa;font:inherit;font-size:14.5px;color:#4d2438">
-        <input placeholder="Mobile (optional, for SMS openings)" style="width:100%;box-sizing:border-box;padding:14px 18px;border:2px solid #f4d3e2;border-radius:16px;background:#fdf7fa;font:inherit;font-size:14.5px;color:#4d2438">
+        <input id="f_name" placeholder="Your name" style="width:100%;box-sizing:border-box;padding:14px 18px;border:2px solid #f4d3e2;border-radius:16px;background:#fdf7fa;font:inherit;font-size:14.5px;color:#4d2438">
+        <input id="f_email" type="email" placeholder="you@example.com" style="width:100%;box-sizing:border-box;padding:14px 18px;border:2px solid #f4d3e2;border-radius:16px;background:#fdf7fa;font:inherit;font-size:14.5px;color:#4d2438">
+        <input id="f_phone" type="tel" placeholder="Mobile (optional, for SMS openings)" style="width:100%;box-sizing:border-box;padding:14px 18px;border:2px solid #f4d3e2;border-radius:16px;background:#fdf7fa;font:inherit;font-size:14.5px;color:#4d2438">
+        <label style="display:flex;gap:8px;align-items:flex-start;font-size:11.5px;line-height:1.5;color:#a86d8b"><input type="checkbox" id="f_consent_email" style="margin-top:2px;accent-color:#d4578e">I agree to receive emails from Brenda. Unsubscribe anytime.</label>
+        <label style="display:flex;gap:8px;align-items:flex-start;font-size:11.5px;line-height:1.5;color:#a86d8b"><input type="checkbox" id="f_consent_sms" style="margin-top:2px;accent-color:#d4578e">Optional: SMS updates. Msg &amp; data rates may apply. Reply STOP to opt out.</label>
         <button onClick="{{ goThanks }}" style="background:#d4578e;color:#fff;border:0;padding:16px;font:inherit;font-size:14.5px;font-weight:700;border-radius:16px;cursor:pointer;box-shadow:0 10px 26px rgba(212,87,142,.35)">Join &amp; claim 20% off</button>
         <div style="font-size:11.5px;line-height:1.5;color:#a86d8b">New guests · one-time use · some services excluded · reply STOP to opt out. See our privacy note below.</div>
       </div>
@@ -194,7 +208,20 @@ class Component extends DCLogic {
       showPromo: this.props.showPromo ?? true,
       showWatermark: this.props.showWatermark ?? true,
       showSparkles: this.props.showSparkles ?? true,
-      goThanks: () => { location.href = 'thanks.html'; },
+      goThanks: () => {
+        var g = (id) => { var e = document.getElementById(id); return e ? (e.value || '').trim() : ''; };
+        var name = g('f_name'), email = g('f_email'), phone = g('f_phone');
+        var ce = document.getElementById('f_consent_email');
+        var cs = document.getElementById('f_consent_sms');
+        if (!email) { alert('Please enter your email to join the list.'); return; }
+        if (ce && !ce.checked) { alert('Please check the box to agree to receive emails.'); return; }
+        var toE164 = (v) => { v = (v || '').replace(/\D+/g, ''); if (v.length === 11 && v[0] === '1') return '+' + v; if (v.length === 10) return '+1' + v; return v ? ('+' + v) : ''; };
+        var data = { 'form-name': 'brenda_leads', 'bot-field': '', name: name, email: email, phone: toE164(phone), consent_email: (ce && ce.checked) ? 'true' : 'false', consent_sms: (cs && cs.checked) ? 'true' : 'false' };
+        var body = Object.keys(data).map(k => encodeURIComponent(k) + '=' + encodeURIComponent(data[k])).join('&');
+        fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body })
+          .then(() => { location.href = 'thanks.html'; })
+          .catch(() => { location.href = 'thanks.html'; });
+      },
       services: [
         {n:'01', t:'Bridal & Event Styling', d:'Trials, day-of styling, updos, veil placement — on-location for the whole party.'},
         {n:'02', t:'Color & Highlights', d:'Lived-in dimension, balayage, blonding, gray blending, and glass-shine gloss.'},
