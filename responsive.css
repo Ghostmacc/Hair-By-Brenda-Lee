@@ -1,0 +1,20 @@
+/* Beauty Quest — mobile/responsive layer.
+   The layout-critical bits (grids, display type, hero images) are made
+   auto-responsive at the source with auto-fit / clamp() / min(), which is
+   immune to how the React runtime re-serializes inline styles. This file
+   handles the global guards + spacing that a stylesheet can own cleanly.
+   [data-screen-label] targets the export's real section/header/footer attrs. */
+
+html, body { max-width: 100%; overflow-x: hidden !important; }
+img, svg { max-width: 100%; }
+
+@media (max-width: 820px) {
+  [data-screen-label] { padding-left: 22px !important; padding-right: 22px !important; }
+  [data-screen-label="Header"] { flex-wrap: wrap !important; gap: 8px 14px !important; padding: 12px 18px !important; }
+  [data-screen-label="Header"] nav { gap: 16px !important; flex-wrap: wrap !important; font-size: 13px !important; }
+}
+
+@media (max-width: 520px) {
+  [data-screen-label] { padding-left: 16px !important; padding-right: 16px !important; }
+  footer[data-screen-label] { flex-direction: column !important; align-items: flex-start !important; text-align: left; row-gap: 12px; }
+}
