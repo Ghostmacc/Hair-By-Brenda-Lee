@@ -78,6 +78,36 @@
     }
   }
 
-  window.addEventListener('pointermove', onMove, { passive: true });
-  window.addEventListener('pointerdown', function (e) { burst(e.clientX, e.clientY); }, { passive: true });
+  // Easter egg: hold still on the page for 10s and the wand starts pulsing —
+  // rhythmic waves of sparkles that grow, like magic charging up. Lift to stop.
+  var holdTimer = null, pulseTimer = null, holdX = 0, holdY = 0, wave = 0;
+
+  function startPulse() {
+    if (pulseTimer) return;
+    wave = 0;
+    pulseTimer = setInterval(function () {
+      wave++;
+      if (wave > 34) { stopPulse(); return; } // safety cap if pointerup was missed
+      var count = 14 + Math.min(wave * 2, 22);
+      var reach = 42 + Math.min(wave * 6, 78);
+      for (var i = 0; i < count; i++) {
+        var a = (Math.PI * 2 * i) / count + wave * 0.35;
+        var r = reach * rand(0.55, 1.12);
+        spark(holdX, holdY, { dx: Math.cos(a) * r, dy: Math.sin(a) * r - rand(0, 12), size: rand(12, 24), dur: rand(720, 1250) });
+      }
+    }, 460);
+  }
+  function stopPulse() { if (pulseTimer) { clearInterval(pulseTimer); pulseTimer = null; } }
+  function clearHold() { if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; } stopPulse(); }
+
+  window.addEventListener('pointermove', function (e) { holdX = e.clientX; holdY = e.clientY; onMove(e); }, { passive: true });
+  window.addEventListener('pointerdown', function (e) {
+    holdX = e.clientX; holdY = e.clientY;
+    burst(e.clientX, e.clientY);
+    clearHold();
+    holdTimer = setTimeout(startPulse, 10000);
+  }, { passive: true });
+  ['pointerup', 'pointercancel', 'pointerleave', 'blur'].forEach(function (ev) {
+    window.addEventListener(ev, clearHold, { passive: true });
+  });
 })();
