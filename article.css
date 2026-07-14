@@ -1,0 +1,32 @@
+:root{--bg:#fdf2f6;--ink:#4d2438;--pink:#d4578e;--mute:#5c3a4c;--soft:#a86d8b}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Figtree',system-ui,sans-serif;line-height:1.7;overflow-x:hidden}
+a{color:var(--pink)}
+.wrap{max-width:760px;margin:0 auto;padding:0 22px}
+header{position:sticky;top:0;z-index:40;background:rgba(253,242,246,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(212,87,142,.12)}
+header .bar{max-width:1080px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
+.brand span{font-family:'Marcellus',serif;font-size:20px;letter-spacing:.08em}
+nav a{color:var(--ink);text-decoration:none;font-weight:600;font-size:13.5px;margin-left:18px}
+article{padding:40px 0 10px}
+.eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--pink)}
+h1{font-family:'Playfair Display',serif;font-weight:500;font-size:clamp(28px,5.5vw,44px);line-height:1.14;margin:12px 0 0}
+h2{font-family:'Playfair Display',serif;font-weight:600;font-size:clamp(22px,4vw,30px);margin:36px 0 8px}
+h3{font-size:19px;margin:24px 0 6px;color:var(--ink)}
+p,li{font-size:16.5px;color:var(--mute)}
+ul{padding-left:20px}
+.lead{font-size:18px;color:var(--ink)}
+.cta{background:var(--ink);color:var(--bg);border-radius:20px;padding:26px 24px;text-align:center;margin:40px 0}
+.cta p{color:#e6c4d4;margin:0 0 16px;font-size:16px}
+.btn{display:inline-block;text-decoration:none;font-weight:700;border-radius:999px;padding:14px 26px;font-size:14.5px;background:var(--pink);color:#fff;margin:4px}
+.btn.ghost{background:transparent;border:2px solid #f0a8c8;color:var(--bg)}
+details{border-bottom:1px solid rgba(212,87,142,.16);padding:14px 0}
+summary{cursor:pointer;font-weight:700;list-style:none;font-size:16.5px}
+summary::-webkit-details-marker{display:none}
+details p{margin:10px 0 0}
+.related{margin:34px 0 10px;font-size:15px;color:var(--soft)}
+.related a{font-weight:700}
+footer{padding:26px 0;font-size:13px;color:var(--soft);border-top:1px solid rgba(212,87,142,.12);margin-top:30px}
+footer .bar{max-width:1080px;margin:0 auto;padding:0 22px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+footer a{margin-left:14px;text-decoration:none;font-weight:700}
